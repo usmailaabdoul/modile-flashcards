@@ -1,6 +1,13 @@
+import Storage from '../../util/storage';
+import {getAllDecks} from './decks';
 
 export function getData() {
   return async (dispatch) => {
-    console.log('shared data');
+    try {
+      const decks = await Storage.loadDataObj('DECKS');
+      dispatch(getAllDecks(decks))
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

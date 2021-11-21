@@ -3,33 +3,36 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import styled from 'styled-components/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
-
-const Title = styled.Text`
-  color: purple;
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-`;
-
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Title>Home Screen</Title>
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
+import Home from './home';
+import Deck from './deck';
+import AddCard from './addCard';
+import Quiz from './quiz';
+import CreateDeck from './addDeck';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+function HomeStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
+      <Stack.Screen name="Deck" component={Deck} />
+      <Stack.Screen name="addCard" component={AddCard} />
+      <Stack.Screen name="quiz" component={Quiz} />
+    </Stack.Navigator>
+  );
+}
+
+function AddDeckStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="addDeck" component={CreateDeck} options={{ title: "Add new deck" }} />
+      <Stack.Screen name="Deck" component={Deck} />
+    </Stack.Navigator>
+  );
+}
 
 export default function Navigation() {
   return (
@@ -40,23 +43,26 @@ export default function Navigation() {
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
-            if (route.name === 'Home') {
+            if (route.name === 'HomeStack') {
               iconName = focused
-                ? 'ios-information-circle'
-                : 'ios-information-circle-outline';
-            } else if (route.name === 'Settings') {
-              iconName = 'ios-grid';
+                ? 'ios-home'
+                : 'ios-home-outline';
+            } else if (route.name === 'Add') {
+              iconName = focused
+                ? 'ios-add-circle'
+                : 'ios-add-circle-outline';
             }
-
-            // You can return any component that you like here!
             return <Ionicons name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: 'tomato',
+          tabBarActiveTintColor: '#948bfe',
           tabBarInactiveTintColor: 'gray',
+          tabBarLabelStyle: {
+            fontSize: 16
+          }
         })}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
+        <Tab.Screen name="HomeStack" component={HomeStack} options={{ headerShown: false, tabBarLabel: 'Home'  }} />
+        <Tab.Screen name="Add" component={AddDeckStack} options={{ headerShown: false }} />
       </Tab.Navigator>
     </NavigationContainer>
   );
