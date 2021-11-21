@@ -26,12 +26,7 @@ export async function schedulePushNotification() {
         title: "Complete your quiz 🤓",
         body: "👋 don't forget to complete your quiz for today!",
       },
-      trigger: { 
-        data: new Date().getDate() + 1,
-        hour: 20,
-        minutes: 0, 
-        seconds: 0, 
-      },
+      trigger: { data: new Date().getDate() + 1,hour: 20 ,minutes: 0, seconds: 0 },
     });
   }
 }
