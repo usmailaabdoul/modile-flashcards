@@ -97,7 +97,8 @@ const Question = ({ q, setCorrect, setIncorrect, restart }) => {
       setAnswered(false);
       setVisibe(false);
     }
-  }, [restart])
+  }, [restart]);
+
   return (
     <View style={{
       paddingVertical: 5,

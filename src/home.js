@@ -1,10 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Text, View } from 'react-native'
 import styled from 'styled-components/native';
 import { connect } from 'react-redux'
 import { getData } from './redux/actions/shared';
 import { updateDecks } from './redux/actions/decks';
 import Storage from './util/storage';
+import { registerForPushNotificationsAsync, schedulePushNotification } from './util/helpers';
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const MainContainer = styled.View`
   flex: 1;
@@ -25,6 +35,36 @@ const Title = styled.Text`
 `;
 
 const Home = ({ navigation, route, decks, ids, getData, updateDecks }) => {
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    const schedule = async () => {
+      await schedulePushNotification()
+    };
+
+    schedule()
+  }, []);
+
   useEffect(() => {
     getData()
   }, [])
